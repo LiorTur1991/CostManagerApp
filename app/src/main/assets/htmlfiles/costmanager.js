@@ -1,7 +1,8 @@
 window.costManager = {};
 
-window.costManager.footerText = "Created by Natan Kaspy and Lior Turgeman";
-
+window.costManager.clearData = function(){
+    let data = localStorage.getItem("data");
+}
 
 window.costManager.getCostItem = function(title, description, date, price, note){
     let costItem = {};
