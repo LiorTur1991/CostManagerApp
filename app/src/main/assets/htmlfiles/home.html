@@ -20,6 +20,14 @@
             </div>
         </div>
         <div data-role="content">
+            <h3 id="currentMonth"></h3>
+            <canvas id="currentMonthPie"></canvas>
+            <script>
+            (function picChartCurrent() {
+                let currentDate = new Date();
+                let CurrentMonth = costManager.getCurrentMonthString(currentDate.getMonth());
+                document.getElementById("currentMonth").innerHTML  = "Current Month: "+CurrentMonth;})();
+            </script>
         </div>
         <div data-role="footer">
             <p><em>Created by Natan Kaspy and Lior Turgeman</em> &copy;</p>
@@ -114,7 +122,7 @@
         </div>
         <div data-role="content">
             <form>
-                Sort By Month: <select id="sortMonth">
+                Sort By Month: <select id="sortMonth" onchange="window.costManager.applySort()">
                 <option value="-1" selected>All</option>
                 <option value="0">January</option>
                 <option value="1">February</option>
@@ -129,19 +137,12 @@
                 <option value="10">November</option>
                 <option value="11">December</option>
             </select>
-                <input type="button" value="Sort" id="applySort" >
             </form>
             <br>
             <div id="list"> </div>
             <br>
             <script>
                 (function load() {window.costManager.updateListView(window.costManager.getItems()); })();
-
-                window.costManager.applySort = function(){
-                    let sortMonth = document.getElementById('sortMonth').value;
-                    window.costManager.updateListView(costManager.getCostsPerMonth(parseInt(sortMonth)));
-                };
-                document.getElementById("applySort").addEventListener("click", window.costManager.applySort);
             </script>
         </div>
         <div data-role="footer">
