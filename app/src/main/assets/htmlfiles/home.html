@@ -6,148 +6,136 @@
     <link rel="stylesheet" href="jquery.mobile-1.4.5.min.css" />
     <script src="jquery-1.11.1.min.js"></script>
     <script src="jquery.mobile-1.4.5.min.js"></script>
-    <script src="Chart.min.js"></script>
+    <script src="canvasjs.min.js"></script>
     <script src="costmanager.js"></script>
 </head>
-    <div data-role="page" id="home">
-        <div data-role="header">
-            <div data-role="navbar">
-                <ul>
-                    <li><a data-icon="grid" data-transition="pop" class="ui-btn-active ui-state-persist">Home</a></li>
-                    <li><a data-icon="plus" href="#add" data-transition="fade">New Expense</a></li>
-                    <li><a data-icon="star" href="#reports" data-transition="fade">Reports</a></li>
-                </ul>
-            </div>
-        </div>
-        <div data-role="content">
-            <h3 id="currentMonth"></h3>
-            <canvas id="currentMonthPie"></canvas>
-            <script>
-            (function picChartCurrent() {
-                let currentDate = new Date();
-                let CurrentMonth = costManager.getCurrentMonthString(currentDate.getMonth());
-                document.getElementById("currentMonth").innerHTML  = "Current Month: "+CurrentMonth;})();
-            </script>
-        </div>
-        <div data-role="footer">
-            <p><em>Created by Natan Kaspy and Lior Turgeman</em> &copy;</p>
+<div data-role="page" id="home">
+    <div data-role="header">
+        <div data-role="navbar">
+            <ul>
+                <li><a data-icon="grid" data-transition="pop" class="ui-btn-active ui-state-persist">Home</a></li>
+                <li><a data-icon="plus" href="#add" data-transition="fade">New Expense</a></li>
+                <li><a data-icon="star" href="#reports" data-transition="fade" onclick="window.costManager.updateReportView()">Reports</a></li>
+            </ul>
         </div>
     </div>
+    <div data-role="content">
+        <h3 id="currentMonth"></h3>
+        <br>
+            <div id="chartContainer" style="height: 400px; width: 100%;"></div>
+        <br>
+        <script>
+            window.costManager.updateHomeView();
+        </script>
+    </div>
+    <div data-role="footer">
+        <p><em>Created by Natan Kaspy and Lior Turgeman</em> &copy;</p>
+    </div>
+</div>
 
 
-    <div data-role="page" id="add">
-        <div data-role="header">
-            <div data-role="navbar">
-                <ul>
-                    <li><a data-icon="grid" href="#home" data-transition="fade">Home</a></li>
-                    <li><a data-icon="plus" class="ui-btn-active ui-state-persist" >New Expense</a></li>
-                    <li><a data-icon="star" href="#reports" data-transition="fade">Reports</a></li>
-                </ul>
-            </div>
-        </div>
-        <div data-role="content">
-            <form id="add-form">
-                Title: <input type="text" id="title"/>
-                Description: <input type="text" id="description"/>
-                Date: <input type="date" id="date"/>
-                Price: <input type="number" id="price"/>
-                Category: <select name="category" id="category">
-                <option value="default" disabled selected>Select a category...</option>
-                <option value="Food">Food</option>
-                <option value="Clothes">Clothes</option>
-                <option value="Education">Education</option>
-                <option value="Travel">Travel</option>
-                <option value="Health">Health</option>
-                <option value="House">House</option>
-            </select>
-                <input type="button" value="Submit" id="submit">
-            </form>
-            <div data-role="popup" id="pop-up-success">
-                <div data-role="header" style="background-color: darkseagreen">
-                    <h1 style="font-weight: bold">Success</h1>
-                </div>
-                <div role="main" data-rel="back" class="ui-content">
-                    <a href="#" data-rel="back"  class="ui-shadow-icon ui-btn ui-shadow ui-corner-all ui-icon-check ui-btn-icon-left">Item successfully added!</a>
-                </div>
-            </div>
-            <div data-role="popup" id="pop-up-warning">
-                <div data-role="header" style="background-color: indianred">
-                    <h1 style="font-weight: bold">Failed</h1>
-                </div>
-                <div data-rel="back" role="main" class="ui-content">
-                    <a href="#" data-rel="back" class="ui-shadow-icon ui-btn ui-shadow ui-corner-all ui-icon-alert ui-btn-icon-left ui-body-a">The form is incomplete!</a>
-                </div>
-            </div>
-            <script>
-                        window.costManager.handleButtonClick =  function (){
-                        try {
-                            let ob = {};
-                            ob.title = document.getElementById("title").value;
-                            ob.description = document.getElementById("description").value;
-                            ob.date = document.getElementById("date").value;
-                            ob.price = document.getElementById("price").value;
-                            ob.category = document.getElementById("category").value;
-                            if(ob.title=="" || ob.description=="" || ob.date=="" || ob.price=="" || ob.category==""){
-                                $("#pop-up-warning").popup("open");
-                                return;
-                            }
-                            window.costManager.addItem(ob);
-                            document.getElementById("title").value = "";
-                            document.getElementById("description").value = "";
-                            document.getElementById("date").value = "";
-                            document.getElementById("price").value = "";
-                            $("#pop-up-success").popup("open");
-                        }
-                        catch{
-                            $("#pop-up-warning").popup("open");
-                        }
-                    }
-                    document.getElementById("submit").addEventListener("click", window.costManager.handleButtonClick);
-                </script>
-        </div>
-        <div data-role="footer">
-            <p><em>Created by Natan Kaspy and Lior Turgeman</em> &copy;</p>
+<div data-role="page" id="add">
+    <div data-role="header">
+        <div data-role="navbar">
+            <ul>
+                <li><a data-icon="grid" href="#home" data-transition="fade" onclick="window.costManager.updateHomeView()">Home</a></li>
+                <li><a data-icon="plus" class="ui-btn-active ui-state-persist" >New Expense</a></li>
+                <li><a data-icon="star" href="#reports" data-transition="fade" onclick="window.costManager.updateReportView()">Reports</a></li>
+            </ul>
         </div>
     </div>
-
-    <div data-role="page" id="reports">
-        <div data-role="header">
-            <div data-role="navbar">
-                <ul>
-                    <li><a data-icon="grid" href="#home" data-transition="fade">Home</a></li>
-                    <li><a data-icon="plus" href="#add" data-transition="fade">New Expense</a></li>
-                    <li><a data-icon="star" class="ui-btn-active ui-state-persist">Reports</a></li>
-                </ul>
+    <div data-role="content">
+        <form id="add-form">
+            Title: <input type="text" id="title"/>
+            Description: <input type="text" id="description"/>
+            Date: <input type="date" id="date"/>
+            Price: <input type="number" id="price"/>
+            Category: <select name="category" id="category">
+            <option value="default" disabled selected>Select a category...</option>
+            <option value="Food">Food</option>
+            <option value="Clothes">Clothes</option>
+            <option value="Education">Education</option>
+            <option value="Travel">Travel</option>
+            <option value="Health">Health</option>
+            <option value="House">House</option>
+        </select>
+            <input type="button" value="Submit" id="submit">
+        </form>
+        <div data-role="popup" id="pop-up-success">
+            <div data-role="header" style="background-color: darkseagreen">
+                <h1 style="font-weight: bold">Success</h1>
+            </div>
+            <div role="main" data-rel="back" class="ui-content">
+                <a href="#" data-rel="back"  class="ui-shadow-icon ui-btn ui-shadow ui-corner-all ui-icon-check ui-btn-icon-left">Item successfully added!</a>
             </div>
         </div>
-        <div data-role="content">
-            <form>
-                Sort By Month: <select id="sortMonth" onchange="window.costManager.applySort()">
-                <option value="-1" selected>All</option>
-                <option value="0">January</option>
-                <option value="1">February</option>
-                <option value="2">March</option>
-                <option value="3">April</option>
-                <option value="4">May</option>
-                <option value="5">June</option>
-                <option value="6">July</option>
-                <option value="7">August</option>
-                <option value="8">September</option>
-                <option value="9">October</option>
-                <option value="10">November</option>
-                <option value="11">December</option>
-            </select>
-            </form>
-            <br>
-            <div id="list"> </div>
-            <br>
-            <script>
-                (function load() {window.costManager.updateListView(window.costManager.getItems()); })();
-            </script>
+        <div data-role="popup" id="pop-up-warning">
+            <div data-role="header" style="background-color: indianred">
+                <h1 style="font-weight: bold">Failed</h1>
+            </div>
+            <div data-rel="back" role="main" class="ui-content">
+                <a href="#" data-rel="back" class="ui-shadow-icon ui-btn ui-shadow ui-corner-all ui-icon-alert ui-btn-icon-left ui-body-a">The form is incomplete!</a>
+            </div>
         </div>
-        <div data-role="footer">
-            <p><em>Created by Natan Kaspy and Lior Turgeman</em> &copy;</p>
+        <script>
+            document.getElementById("submit").addEventListener("click", window.costManager.handleAddButtonClick);
+        </script>
+    </div>
+    <div data-role="footer">
+        <p><em>Created by Natan Kaspy and Lior Turgeman</em> &copy;</p>
+    </div>
+</div>
+
+<div data-role="page" id="reports">
+    <div data-role="header">
+        <div data-role="navbar">
+            <ul>
+                <li><a data-icon="grid" href="#home" data-transition="fade" onclick="window.costManager.updateHomeView()">Home</a></li>
+                <li><a data-icon="plus" href="#add" data-transition="fade">New Expense</a></li>
+                <li><a data-icon="star" class="ui-btn-active ui-state-persist">Reports</a></li>
+            </ul>
         </div>
     </div>
+    <div data-role="content">
+        <form>
+            Sort By Month: <select id="sortMonth" onchange="window.costManager.applySort()">
+            <option value="-1" selected>All</option>
+            <option value="0">January</option>
+            <option value="1">February</option>
+            <option value="2">March</option>
+            <option value="3">April</option>
+            <option value="4">May</option>
+            <option value="5">June</option>
+            <option value="6">July</option>
+            <option value="7">August</option>
+            <option value="8">September</option>
+            <option value="9">October</option>
+            <option value="10">November</option>
+            <option value="11">December</option>
+        </select>
+
+        </form>
+        <br>
+        <div id="list"> </div>
+        <br>
+        <div id="sortedContainer" style="height: 400px; width: 100%;"></div>
+        <div data-role="popup" id="pop-up-clearData">
+            <div data-role="header" style="background-color: darkseagreen">
+                <h1 style="font-weight: bold">Success</h1>
+            </div>
+            <div role="main" data-rel="back" class="ui-content">
+                <a href="#" data-rel="back"  class="ui-shadow-icon ui-btn ui-shadow ui-corner-all ui-icon-check ui-btn-icon-left">App Data Deleted!</a>
+            </div>
+        </div>
+        <br>
+        <input type="button" value="Clear All App Data" id="clearData" onclick="window.costManager.clearLocalStorageData()">
+        <script>
+            window.costManager.updateReportView();
+        </script>
+    </div>
+    <div data-role="footer">
+        <p><em>Created by Natan Kaspy and Lior Turgeman</em> &copy;</p>
+    </div>
+</div>
 </div>
 </html>
