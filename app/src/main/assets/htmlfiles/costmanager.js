@@ -1,3 +1,11 @@
+/**
+ * Final Project
+ * Lior Turgeman, Id: 304941412
+ * Natan Kaspy, Id:304811177
+ * We should get Bonuses on Phase 1 and 2!
+*/
+
+
 window.costManager = {};
 
 /**
